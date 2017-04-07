@@ -131,8 +131,9 @@ var Jsoner = function () {
     }
   }, {
     key: 'createFromResponse',
-    value: function createFromResponse(path, res, body) {
+    value: function createFromResponse(endpointName, path, res, body) {
       var api = {
+        endpointName: endpointName,
         method: res.request.method,
         url: path,
         example_url: res.request.uri.href,
