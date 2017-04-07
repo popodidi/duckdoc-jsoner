@@ -6,6 +6,10 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _lodash = require('lodash');
+
+var _lodash2 = _interopRequireDefault(_lodash);
+
 var _fs = require('fs');
 
 var _fs2 = _interopRequireDefault(_fs);
@@ -49,13 +53,34 @@ var Jsoner = function () {
       });
     }
   }, {
-    key: 'createApiJson',
-    value: function createApiJson(api) {
+    key: '_createApiJson',
+    value: function _createApiJson(api) {
       var fileName = api.method + '_' + (0, _filenamify2.default)(api.url, { replacement: '+' });
       var filePath = _path2.default.join(this.ouputPath, fileName + '.json');
       this._mkdirIfNecessary();
       _fs2.default.writeFileSync(filePath, JSON.stringify(api));
       console.log(_chalk2.default.green.bold("  Create: ") + _chalk2.default.blue(filePath));
+    }
+  }, {
+    key: 'createFromResponse',
+    value: function createFromResponse(path, res, body) {
+      var api = {
+        method: res.request.method,
+        url: path,
+        example_url: res.request.uri.href,
+        req: {
+          headers: _lodash2.default.pick(res.request.headers, ['content-type', 'Authorization']),
+          body: JSON.parse(res.request.body)
+        },
+        res: {
+          status: {
+            code: res.statusCode,
+            message: res.statusMessage
+          },
+          body: body
+        }
+      };
+      this._createApiJson(api);
     }
   }]);
 
