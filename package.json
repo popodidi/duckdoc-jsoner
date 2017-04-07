@@ -1,7 +1,7 @@
 {
   "name": "duckdoc-jsoner",
-  "version": "0.3.7",
-  "description": "",
+  "version": "0.4.0",
+  "description": "json file generator for duckdoc",
   "main": "build/index.js",
   "scripts": {
     "index": "babel-node src/index.js",
@@ -10,7 +10,17 @@
     "build": "babel src --out-dir build"
   },
   "author": "Hao",
-  "license": "ISC",
+  "license": "MIT",
+  "keywords": [
+    "json",
+    "duckdoc",
+    "api",
+    "document",
+    "documentation",
+    "document generation"
+  ],
+  "homepage": "https://github.com/popodidi/duckdoc-jsoner",
+  "repository": "https://github.com/popodidi/duckdoc-jsoner.git",
   "devDependencies": {
     "babel-cli": "^6.24.0",
     "babel-preset-env": "^1.3.2"
