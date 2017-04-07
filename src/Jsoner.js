@@ -6,15 +6,11 @@ import chalk from 'chalk';
 
 class Jsoner {
   constructor(outputPath) {
-    this.ouputPath = outputPath;
+    this.outputPath = outputPath;
   }
 
   _mkdirIfNecessary() {
-    // if (!fs.existsSync(this.ouputPath)) {
-    //   fs.mkdirSync(this.ouputPath);
-    // }
-
-    this.ouputPath.split('/').forEach((dir, index, splits) => {
+    this.outputPath.split('/').forEach((dir, index, splits) => {
       const parent = splits.slice(0, index).join('/');
       const dirPath = path.resolve(parent, dir);
       if (!fs.existsSync(dirPath)) {
@@ -25,7 +21,7 @@ class Jsoner {
 
   _createApiJson(api) {
     let fileName = `${api.method}_${filenamify(api.url, {replacement: '+'})}`;
-    let filePath = path.join(this.ouputPath, `${fileName}.json`);
+    let filePath = path.join(this.outputPath, `${fileName}.json`);
     this._mkdirIfNecessary();
     fs.writeFileSync(filePath, JSON.stringify(api));
     console.log(chalk.green.bold("  Create: ") + chalk.blue(filePath));

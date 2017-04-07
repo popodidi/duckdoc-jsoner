@@ -36,17 +36,13 @@ var Jsoner = function () {
   function Jsoner(outputPath) {
     _classCallCheck(this, Jsoner);
 
-    this.ouputPath = outputPath;
+    this.outputPath = outputPath;
   }
 
   _createClass(Jsoner, [{
     key: '_mkdirIfNecessary',
     value: function _mkdirIfNecessary() {
-      // if (!fs.existsSync(this.ouputPath)) {
-      //   fs.mkdirSync(this.ouputPath);
-      // }
-
-      this.ouputPath.split('/').forEach(function (dir, index, splits) {
+      this.outputPath.split('/').forEach(function (dir, index, splits) {
         var parent = splits.slice(0, index).join('/');
         var dirPath = _path2.default.resolve(parent, dir);
         if (!_fs2.default.existsSync(dirPath)) {
@@ -58,7 +54,7 @@ var Jsoner = function () {
     key: '_createApiJson',
     value: function _createApiJson(api) {
       var fileName = api.method + '_' + (0, _filenamify2.default)(api.url, { replacement: '+' });
-      var filePath = _path2.default.join(this.ouputPath, fileName + '.json');
+      var filePath = _path2.default.join(this.outputPath, fileName + '.json');
       this._mkdirIfNecessary();
       _fs2.default.writeFileSync(filePath, JSON.stringify(api));
       console.log(_chalk2.default.green.bold("  Create: ") + _chalk2.default.blue(filePath));
