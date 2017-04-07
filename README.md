@@ -8,8 +8,10 @@
 
 - example
 ```js
-jsoner.outputPath = path.join(__dirname, '../../test_doc/json');
-jsoner.createFromResponse('GET Captcha', '/captcha', response, body);
+request(options, function (error, response, body) {
+  jsoner.ouputPath = path.join(__dirname, '../../test_doc/json');
+  jsoner.createFromResponse('GET Test', '/test', response, body);
+});
 ```
 
 - request
