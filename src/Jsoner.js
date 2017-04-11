@@ -3,6 +3,9 @@ import fs from 'fs';
 import path from 'path';
 import filenamify from 'filenamify';
 import chalk from 'chalk';
+import tv4 from 'tv4';
+import schema from './schema/schema';
+import url from 'url';
 
 class Jsoner {
   constructor(outputPath) {
@@ -20,11 +23,15 @@ class Jsoner {
   }
 
   _createApiJson(api) {
-    let fileName = `${api.method}_${filenamify(api.url, {replacement: '+'})}`;
-    let filePath = path.join(this.outputPath, `${fileName}.json`);
-    this._mkdirIfNecessary();
-    fs.writeFileSync(filePath, JSON.stringify(api));
-    console.log(chalk.green.bold("  Create: ") + chalk.blue(filePath));
+    try {
+      let fileName = `${api.method}_${filenamify(api.pathParams, {replacement: '+'})}`;
+      let filePath = path.join(this.outputPath, `${fileName}.json`);
+      this._mkdirIfNecessary();
+      fs.writeFileSync(filePath, JSON.stringify(api));
+      console.log(chalk.green.bold("  Create: ") + chalk.blue(filePath));
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   _syntaxHighlight(json) {
@@ -90,6 +97,97 @@ class Jsoner {
     });
   }
 
+  _parseAPI(api, options) {
+    let exportAPI = _.merge({}, api);
+
+    //處理request body
+    if (_.isObject(api.req.body)) {
+      let req_body = [];
+      let reqbody = api.req.body;
+      this._sortBodyValue(reqbody, null, req_body);
+      exportAPI.req.raw_body = JSON.stringify(reqbody, null, 2);
+      exportAPI.req.body = this._syntaxHighlight(exportAPI.req.raw_body);
+      exportAPI.req.bodyParams = req_body;
+    } else {
+      if (!_.isUndefined(api.req.body)) {
+        exportAPI.req.raw_body = api.req.body;
+        exportAPI.req.body = api.req.body;
+        exportAPI.req.bodyParams = null;
+      } else {
+        exportAPI.req.raw_body = null;
+        exportAPI.req.body = null;
+        exportAPI.req.bodyParams = null;
+      }//end if
+
+    }
+
+    //處理response body
+    if (_.isObject(api.res.body)) {
+      let res_body = [];
+      if (_.isUndefined(api.res.body.data)) {
+        this._sortBodyValue(api.res.body, null, res_body);
+      } else if (_.isArray(api.res.body.data)) {
+        //如果有data代表他可能是array
+        let reqbody = _.head(api.res.body.data);
+        this._sortBodyValue(reqbody, null, res_body);
+      }//end if
+      exportAPI.res.raw_body = JSON.stringify(api.res.body, null, 2);
+      exportAPI.res.body = this._syntaxHighlight(exportAPI.res.raw_body);
+      exportAPI.res.bodyParams = res_body;
+    } else {
+      if (!_.isUndefined(api.res.body)) {
+        exportAPI.res.raw_body = api.res.body;
+        exportAPI.res.body = api.res.body;
+        exportAPI.res.bodyParams = null;
+      } else {
+        exportAPI.res.raw_body = null;
+        exportAPI.res.body = null;
+        exportAPI.res.bodyParams = null;
+      }//end if
+    }//end if
+
+    if (_.isObject(api.req.headers)) {
+      let headers = [];
+      let omit = ['accept', 'content-length'];
+      _.forEach(_.omit(api.req.headers, omit), (v, k) => {
+        headers.push({
+          key: k,
+          value: v
+        });
+      });
+      exportAPI.req.headers = headers;
+    } else {
+      exportAPI.req.headers = (_.isUndefined(api.req.headers)) ? null : api.req.headers;
+    }//end if
+
+    if (_.isNull(options)) {
+      //處理options
+      let urlObject = url.parse(api.url);
+      exportAPI.pathParams = urlObject.pathname;
+      exportAPI.endpointName = `${api.method} ${urlObject.pathname}`;
+      // console.log(exportAPI);
+      this._createApiJson(exportAPI);
+    } else {
+      this._parseOptions(exportAPI, options);
+    }//end if
+  }
+
+  _parseOptions(api, options) {
+    let API = _.merge(api, options);
+    console.log(API);
+  }
+
+  createFromAPI(api, options = null) {
+    let result = tv4.validateMultiple(api, schema.apiSchema);
+    if (result.valid) {
+      this._parseAPI(api, options);
+    } else {
+      let err = _.first(result.errors);
+      throw new Error(chalk.red.bold(`${err.message} : ${err.dataPath}`));
+    }//end if
+  }
+
+
   createFromResponse(endpointName, path, res, body) {
     let api = {
       endpointName: endpointName,
@@ -115,7 +213,7 @@ class Jsoner {
       api.req.bodyParams = req_body;
     } catch (e) {
       api.req.raw_body = res.request.body;
-      api.req.body = null;
+      api.req.body = res.request.body;
       api.req.bodyParams = null;
     }
 
@@ -134,7 +232,7 @@ class Jsoner {
       api.res.bodyParams = res_body;
     } else {
       api.res.raw_body = body;
-      api.res.body = null;
+      api.res.body = body;
       api.res.bodyParams = null;
     }//end if
 

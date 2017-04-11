@@ -28,6 +28,14 @@ var _chalk = require('chalk');
 
 var _chalk2 = _interopRequireDefault(_chalk);
 
+var _tv = require('tv4');
+
+var _tv2 = _interopRequireDefault(_tv);
+
+var _schema = require('./schema/schema');
+
+var _schema2 = _interopRequireDefault(_schema);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -126,6 +134,23 @@ var Jsoner = function () {
       });
     }
   }, {
+    key: '_parseAPI',
+    value: function _parseAPI(api, options) {
+      console.log("hi");
+    }
+  }, {
+    key: 'createFromAPI',
+    value: function createFromAPI(api) {
+      var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+
+      var result = _tv2.default.validateMultiple(api, _schema2.default.apiSchema);
+      if (result.valid) {
+        this._parseAPI(api, options);
+      } else {
+        // return result;
+      }
+    }
+  }, {
     key: 'createFromResponse',
     value: function createFromResponse(endpointName, path, res, body) {
       var api = {
@@ -152,7 +177,7 @@ var Jsoner = function () {
         api.req.bodyParams = req_body;
       } catch (e) {
         api.req.raw_body = res.request.body;
-        api.req.body = null;
+        api.req.body = res.request.body;
         api.req.bodyParams = null;
       }
 
@@ -171,7 +196,7 @@ var Jsoner = function () {
         api.res.bodyParams = res_body;
       } else {
         api.res.raw_body = body;
-        api.res.body = null;
+        api.res.body = body;
         api.res.bodyParams = null;
       } //end if
 
@@ -196,3 +221,4 @@ var Jsoner = function () {
 }();
 
 exports.default = Jsoner;
+module.exports = exports['default'];

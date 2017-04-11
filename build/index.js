@@ -12,3 +12,4 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var jsoner = new _Jsoner2.default();
 exports.default = new _Jsoner2.default();
+module.exports = exports['default'];
