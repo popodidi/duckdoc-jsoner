@@ -19,7 +19,10 @@ let api = {
   "method": "GET",
   "url": "https://localhost:8000/register",
   "req": {
-    "body": {
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": {
       "email": "xxx@xxx.xxx",
       "tel": "xxxxxxx",
       "deviceUUID": "xxxx-xxx-xxx"
