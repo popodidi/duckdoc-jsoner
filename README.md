@@ -17,12 +17,12 @@ $ npm install --save-dev duckdoc-jsoner
 var jsoner = require('duckdoc-jsoner');
 let api = {
   "method": "GET",
-  "url": "https://localhost:8000/captcha",
+  "url": "https://localhost:8000/register",
   "req": {
     "body": {
-      "email": "",
-      "tel": "+886912810026",
-      "deviceUUID": "D54EK21R-32JE71M-QM3N9-DDIOS-A1T56-55D6A6"
+      "email": "xxx@xxx.xxx",
+      "tel": "xxxxxxx",
+      "deviceUUID": "xxxx-xxx-xxx"
     }
   },
   "res": {
@@ -31,7 +31,7 @@ let api = {
       "message": "OK",
     },
     "body": {
-      "message": "Save captcha success."
+      "message": "Register success."
     }
   }
 };
