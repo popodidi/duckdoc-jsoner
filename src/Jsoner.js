@@ -164,7 +164,8 @@ class Jsoner {
       //處理options
       let urlObject = url.parse(api.url);
       exportAPI.pathParams = urlObject.pathname;
-      exportAPI.endpointName = `${api.method} ${urlObject.pathname}`;
+      exportAPI.endpointName = urlObject.pathname;
+      // exportAPI.endpointName = `${api.method} ${urlObject.pathname}`;
       // console.log(exportAPI);
       this._createApiJson(exportAPI);
     } else {
@@ -174,7 +175,7 @@ class Jsoner {
 
   _parseOptions(api, options) {
     let API = _.merge(api, options);
-    console.log(API);
+    this._createApiJson(API);
   }
 
   createFromAPI(api, options = null) {

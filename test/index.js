@@ -3,16 +3,13 @@ import path from 'path';
 // let jsoner = require('../build/index');
 let api = {
   "method": "POST",
-  "url": "/captcha",
-  "example_url": "https://localhost:8000/captcha",
+  "url": "https://localhost:8000/captcha",
   "req": {
     "headers": {
       "content-type": "application/json"
     },
     "body": {
-      "email": "",
-      "tel": "+886912810026",
-      "deviceUUID": "D54EK21R-32JE71M-QM3N9-DDIOS-A1T56-55D6A6"
+      "sajdlksa": "avsdjfdksl"
     }
   },
   "res": {
@@ -57,4 +54,4 @@ let options_example = {
 
 // console.log(path.join(__dirname, './duckdoc/json'));
 jsoner.outputPath = path.join(__dirname, './duckdoc/json');
-jsoner.createFromAPI(api_test);
+jsoner.createFromAPI(api, options_example);

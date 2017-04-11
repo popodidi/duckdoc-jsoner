@@ -36,6 +36,10 @@ var _schema = require('./schema/schema');
 
 var _schema2 = _interopRequireDefault(_schema);
 
+var _url = require('url');
+
+var _url2 = _interopRequireDefault(_url);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -61,11 +65,15 @@ var Jsoner = function () {
   }, {
     key: '_createApiJson',
     value: function _createApiJson(api) {
-      var fileName = api.method + '_' + (0, _filenamify2.default)(api.url, { replacement: '+' });
-      var filePath = _path2.default.join(this.outputPath, fileName + '.json');
-      this._mkdirIfNecessary();
-      _fs2.default.writeFileSync(filePath, JSON.stringify(api));
-      console.log(_chalk2.default.green.bold("  Create: ") + _chalk2.default.blue(filePath));
+      try {
+        var fileName = api.method + '_' + (0, _filenamify2.default)(api.pathParams, { replacement: '+' });
+        var filePath = _path2.default.join(this.outputPath, fileName + '.json');
+        this._mkdirIfNecessary();
+        _fs2.default.writeFileSync(filePath, JSON.stringify(api));
+        console.log(_chalk2.default.green.bold("  Create: ") + _chalk2.default.blue(filePath));
+      } catch (e) {
+        console.log(e);
+      }
     }
   }, {
     key: '_syntaxHighlight',
@@ -136,7 +144,84 @@ var Jsoner = function () {
   }, {
     key: '_parseAPI',
     value: function _parseAPI(api, options) {
-      console.log("hi");
+      var exportAPI = _lodash2.default.merge({}, api);
+
+      //處理request body
+      if (_lodash2.default.isObject(api.req.body)) {
+        var req_body = [];
+        var reqbody = api.req.body;
+        this._sortBodyValue(reqbody, null, req_body);
+        exportAPI.req.raw_body = JSON.stringify(reqbody, null, 2);
+        exportAPI.req.body = this._syntaxHighlight(exportAPI.req.raw_body);
+        exportAPI.req.bodyParams = req_body;
+      } else {
+        if (!_lodash2.default.isUndefined(api.req.body)) {
+          exportAPI.req.raw_body = api.req.body;
+          exportAPI.req.body = api.req.body;
+          exportAPI.req.bodyParams = null;
+        } else {
+          exportAPI.req.raw_body = null;
+          exportAPI.req.body = null;
+          exportAPI.req.bodyParams = null;
+        } //end if
+      }
+
+      //處理response body
+      if (_lodash2.default.isObject(api.res.body)) {
+        var res_body = [];
+        if (_lodash2.default.isUndefined(api.res.body.data)) {
+          this._sortBodyValue(api.res.body, null, res_body);
+        } else if (_lodash2.default.isArray(api.res.body.data)) {
+          //如果有data代表他可能是array
+          var _reqbody = _lodash2.default.head(api.res.body.data);
+          this._sortBodyValue(_reqbody, null, res_body);
+        } //end if
+        exportAPI.res.raw_body = JSON.stringify(api.res.body, null, 2);
+        exportAPI.res.body = this._syntaxHighlight(exportAPI.res.raw_body);
+        exportAPI.res.bodyParams = res_body;
+      } else {
+        if (!_lodash2.default.isUndefined(api.res.body)) {
+          exportAPI.res.raw_body = api.res.body;
+          exportAPI.res.body = api.res.body;
+          exportAPI.res.bodyParams = null;
+        } else {
+          exportAPI.res.raw_body = null;
+          exportAPI.res.body = null;
+          exportAPI.res.bodyParams = null;
+        } //end if
+      } //end if
+
+      if (_lodash2.default.isObject(api.req.headers)) {
+        var headers = [];
+        var omit = ['accept', 'content-length'];
+        _lodash2.default.forEach(_lodash2.default.omit(api.req.headers, omit), function (v, k) {
+          headers.push({
+            key: k,
+            value: v
+          });
+        });
+        exportAPI.req.headers = headers;
+      } else {
+        exportAPI.req.headers = _lodash2.default.isUndefined(api.req.headers) ? null : api.req.headers;
+      } //end if
+
+      if (_lodash2.default.isNull(options)) {
+        //處理options
+        var urlObject = _url2.default.parse(api.url);
+        exportAPI.pathParams = urlObject.pathname;
+        exportAPI.endpointName = urlObject.pathname;
+        // exportAPI.endpointName = `${api.method} ${urlObject.pathname}`;
+        // console.log(exportAPI);
+        this._createApiJson(exportAPI);
+      } else {
+        this._parseOptions(exportAPI, options);
+      } //end if
+    }
+  }, {
+    key: '_parseOptions',
+    value: function _parseOptions(api, options) {
+      var API = _lodash2.default.merge(api, options);
+      this._createApiJson(API);
     }
   }, {
     key: 'createFromAPI',
@@ -147,8 +232,9 @@ var Jsoner = function () {
       if (result.valid) {
         this._parseAPI(api, options);
       } else {
-        // return result;
-      }
+        var err = _lodash2.default.first(result.errors);
+        throw new Error(_chalk2.default.red.bold(err.message + ' : ' + err.dataPath));
+      } //end if
     }
   }, {
     key: 'createFromResponse',
@@ -188,8 +274,8 @@ var Jsoner = function () {
           this._sortBodyValue(body, null, res_body);
         } else if (_lodash2.default.isArray(body.data)) {
           //如果有data代表他是array
-          var _reqbody = _lodash2.default.head(body.data);
-          this._sortBodyValue(_reqbody, null, res_body);
+          var _reqbody2 = _lodash2.default.head(body.data);
+          this._sortBodyValue(_reqbody2, null, res_body);
         } //end if
         api.res.raw_body = JSON.stringify(body, null, 2);
         api.res.body = this._syntaxHighlight(api.res.raw_body);

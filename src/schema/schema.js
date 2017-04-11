@@ -19,7 +19,7 @@ let apiSchema = {
           "type": "object"
         },
         "body": {
-          "type": "object"
+          "type": ["object", "string"]
         }
       },
       "additionalProperties": false,
@@ -40,7 +40,7 @@ let apiSchema = {
           "additionalProperties": false,
         },
         "body": {
-          "type": "object"
+          "type": ["object", "string"]
         }
       },
       "additionalProperties": false,

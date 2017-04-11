@@ -1,6 +1,6 @@
 {
   "name": "duckdoc-jsoner",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "json file generator for duckdoc",
   "main": "build/index.js",
   "scripts": {
