@@ -189,12 +189,13 @@ class Jsoner {
   }
 
 
-  createFromResponse(endpointName, path, res, body) {
+  createFromResponse(endpointName, pathParams, res, body) {
     let api = {
       endpointName: endpointName,
+      pathParams: pathParams,
       method: res.request.method,
-      url: path,
-      example_url: res.request.uri.href,
+      url: res.request.uri.href,
+      // example_url: res.request.uri.href,
       req: {},
       res: {
         status: {
