@@ -190,8 +190,6 @@ class Jsoner {
       let urlObject = url.parse(api.url);
       exportAPI.pathParams = urlObject.pathname;
       exportAPI.endpointName = urlObject.pathname;
-      // exportAPI.endpointName = `${api.method} ${urlObject.pathname}`;
-      // console.log(exportAPI);
       this._createApiJson(exportAPI);
     } else {
       this._parseOptions(exportAPI, options);
@@ -199,7 +197,30 @@ class Jsoner {
   }
 
   _parseOptions(api, options) {
-    let API = _.merge(api, options);
+    let API = Object.assign(api, {
+      endpointName: options.endpointName,
+      pathParams: options.pathParams,
+      req: Object.assign(api.req, {
+        bodyParams: _.map(api.req.bodyParams, (o) => {
+          o["description"] = _.get(_.get(options, 'req.body.description'), o.name)
+          var optionalParams = _.get(options, 'req.body.optionalParams');
+          if (!_.isUndefined(optionalParams) && _.indexOf(optionalParams, o.name) >= 0) {
+            o["optional"] = true;
+          }
+          return o
+        })
+      }),
+      res: Object.assign(api.res, {
+        bodyParams: _.map(api.res.bodyParams, (o) => {
+          o["description"] = _.get(_.get(options, 'res.body.description'), o.name)
+          var optionalParams = _.get(options, 'res.body.optionalParams');
+          if (!_.isUndefined(optionalParams) && _.indexOf(optionalParams, o.name) >= 0) {
+            o["optional"] = true;
+          }
+          return o
+        })
+      })
+    });
     this._createApiJson(API);
   }
 

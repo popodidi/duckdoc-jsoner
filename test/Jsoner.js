@@ -79,4 +79,28 @@ let api = {
 }
 
 jsoner.outputPath = path.join(__dirname, '../duckdoc/json');
-jsoner.createFromAPI(api);
+var options = {
+  endpointName: "NAMEEEE",
+  pathParams: "/endpoint/param/:pppp",
+  req: {
+    body: {
+      description: {
+        para: "what's up?"
+      },
+      optionalParams: [
+        "para"
+      ]
+    }
+  },
+  res: {
+    body: {
+      description: {
+        "data.__first_item.id": "YOOOOOOO"
+      },
+      optionalParams: [
+        "data.__first_item.id", "data.__first_item.name"
+      ]
+    }
+  }
+}
+jsoner.createFromAPI(api, options);

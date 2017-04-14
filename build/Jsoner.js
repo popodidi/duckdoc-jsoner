@@ -233,8 +233,6 @@ var Jsoner = function () {
         var urlObject = _url2.default.parse(api.url);
         exportAPI.pathParams = urlObject.pathname;
         exportAPI.endpointName = urlObject.pathname;
-        // exportAPI.endpointName = `${api.method} ${urlObject.pathname}`;
-        // console.log(exportAPI);
         this._createApiJson(exportAPI);
       } else {
         this._parseOptions(exportAPI, options);
@@ -243,7 +241,30 @@ var Jsoner = function () {
   }, {
     key: '_parseOptions',
     value: function _parseOptions(api, options) {
-      var API = _lodash2.default.merge(api, options);
+      var API = Object.assign(api, {
+        endpointName: options.endpointName,
+        pathParams: options.pathParams,
+        req: Object.assign(api.req, {
+          bodyParams: _lodash2.default.map(api.req.bodyParams, function (o) {
+            o["description"] = _lodash2.default.get(_lodash2.default.get(options, 'req.body.description'), o.name);
+            var optionalParams = _lodash2.default.get(options, 'req.body.optionalParams');
+            if (!_lodash2.default.isUndefined(optionalParams) && _lodash2.default.indexOf(optionalParams, o.name) >= 0) {
+              o["optional"] = true;
+            }
+            return o;
+          })
+        }),
+        res: Object.assign(api.res, {
+          bodyParams: _lodash2.default.map(api.res.bodyParams, function (o) {
+            o["description"] = _lodash2.default.get(_lodash2.default.get(options, 'res.body.description'), o.name);
+            var optionalParams = _lodash2.default.get(options, 'res.body.optionalParams');
+            if (!_lodash2.default.isUndefined(optionalParams) && _lodash2.default.indexOf(optionalParams, o.name) >= 0) {
+              o["optional"] = true;
+            }
+            return o;
+          })
+        })
+      });
       this._createApiJson(API);
     }
   }, {

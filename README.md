@@ -49,7 +49,22 @@ jsoner.createFromAPI(api);
 
 let options = {
   endpointName: "User register",
-  pathParams: "/user/:id"
+  pathParams: "/user/:id",
+  req: {
+      body: {
+        description: {
+          email: "user email"
+        },
+        optionalParams: [
+          "deviceUUID" // optional parameter
+        ]
+      }
+    },
+    res: {
+      body: {
+        // same as req.body
+      }
+    }
 };
 jsoner.createFromAPI(api, options);
 ```
