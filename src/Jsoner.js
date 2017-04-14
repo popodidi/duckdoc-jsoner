@@ -67,34 +67,65 @@ class Jsoner {
   }
 
   _sortBodyValue(body, key, sortData) {
+
     let objectKey = "";
-    _.forEach(body, (v, k) => {
-      if (_.isObject(v)) {
-        if (!_.isNull(key)) {
-          objectKey += `${key}.` + k;
-        } else {
-          objectKey = k;
-        }//end if
-        sortData.push({
-          name: objectKey,
-          type: typeof v,
-          formatted: this._replaceDot(objectKey)
-        });
-        this._sortBodyValue.bind(this)(v, objectKey, sortData);
+
+    if (!_.isUndefined(_.get(body, 'data'))) {
+      if (!_.isNull(key)) {
+        objectKey += `${key}.` + "data";
       } else {
-        let objectKey = "";
+        objectKey = "data";
+      }
+      this._sortBodyValue.bind(this)(body.data, objectKey, sortData);
+      return
+    }
+
+
+    if (_.isArray(body)) {
+      sortData.push({
+        name     : key,
+        type     : this._typeOf(body),
+        formatted: this._replaceDot(key)
+      });
+
+      objectKey = "";
+      if (!_.isNull(key)) {
+        objectKey += `${key}.` + "__first_item";
+      } else {
+        objectKey = "__first_item";
+      }
+      let firstObject = _.head(body);
+      this._sortBodyValue.bind(this)(firstObject, objectKey, sortData);
+      return
+    }
+
+    if (_.isObject(body)) {
+      _.forEach(body, (v, k) => {
+        objectKey = "";
         if (!_.isNull(key)) {
           objectKey += `${key}.` + k;
         } else {
-          objectKey = k;
+          objectKey = k.toString();
         }//end if
-        sortData.push({
-          name: objectKey,
-          type: typeof v,
-          formatted: this._replaceDot(objectKey)
-        });
-      }//end if
+        this._sortBodyValue.bind(this)(v, objectKey, sortData);
+      })
+      return
+    }
+
+    sortData.push({
+      name     : key,
+      type     : this._typeOf(body),
+      formatted: this._replaceDot(key)
     });
+
+  }
+
+  _typeOf(v) {
+    if (_.isArray(v)) {
+      return "array"
+    } else {
+      return typeof v
+    }
   }
 
   _parseAPI(api, options) {
@@ -124,13 +155,7 @@ class Jsoner {
     //處理response body
     if (_.isObject(api.res.body)) {
       let res_body = [];
-      if (_.isUndefined(api.res.body.data)) {
-        this._sortBodyValue(api.res.body, null, res_body);
-      } else if (_.isArray(api.res.body.data)) {
-        //如果有data代表他可能是array
-        let reqbody = _.head(api.res.body.data);
-        this._sortBodyValue(reqbody, null, res_body);
-      }//end if
+      this._sortBodyValue(api.res.body, null, res_body);
       exportAPI.res.raw_body = JSON.stringify(api.res.body, null, 2);
       exportAPI.res.body = this._syntaxHighlight(exportAPI.res.raw_body);
       exportAPI.res.bodyParams = res_body;
@@ -151,7 +176,7 @@ class Jsoner {
       let omit = ['accept', 'content-length'];
       _.forEach(_.omit(api.req.headers, omit), (v, k) => {
         headers.push({
-          key: k,
+          key  : k,
           value: v
         });
       });
@@ -192,14 +217,14 @@ class Jsoner {
   createFromResponse(endpointName, pathParams, res, body) {
     let api = {
       endpointName: endpointName,
-      pathParams: pathParams,
-      method: res.request.method,
-      url: res.request.uri.href,
+      pathParams  : pathParams,
+      method      : res.request.method,
+      url         : res.request.uri.href,
       // example_url: res.request.uri.href,
-      req: {},
-      res: {
+      req         : {},
+      res         : {
         status: {
-          code: res.statusCode,
+          code   : res.statusCode,
           message: res.statusMessage
         }
       }
@@ -243,7 +268,7 @@ class Jsoner {
       let omit = ['accept', 'content-length'];
       _.forEach(_.omit(res.request.headers, omit), (v, k) => {
         headers.push({
-          key: k,
+          key  : k,
           value: v
         });
       });

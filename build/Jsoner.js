@@ -113,33 +113,62 @@ var Jsoner = function () {
       var _this = this;
 
       var objectKey = "";
-      _lodash2.default.forEach(body, function (v, k) {
-        if (_lodash2.default.isObject(v)) {
+
+      if (!_lodash2.default.isUndefined(_lodash2.default.get(body, 'data'))) {
+        if (!_lodash2.default.isNull(key)) {
+          objectKey += key + '.' + "data";
+        } else {
+          objectKey = "data";
+        }
+        this._sortBodyValue.bind(this)(body.data, objectKey, sortData);
+        return;
+      }
+
+      if (_lodash2.default.isArray(body)) {
+        sortData.push({
+          name: key,
+          type: this._typeOf(body),
+          formatted: this._replaceDot(key)
+        });
+
+        objectKey = "";
+        if (!_lodash2.default.isNull(key)) {
+          objectKey += key + '.' + "__first_item";
+        } else {
+          objectKey = "__first_item";
+        }
+        var firstObject = _lodash2.default.head(body);
+        this._sortBodyValue.bind(this)(firstObject, objectKey, sortData);
+        return;
+      }
+
+      if (_lodash2.default.isObject(body)) {
+        _lodash2.default.forEach(body, function (v, k) {
+          objectKey = "";
           if (!_lodash2.default.isNull(key)) {
             objectKey += key + '.' + k;
           } else {
-            objectKey = k;
+            objectKey = k.toString();
           } //end if
-          sortData.push({
-            name: objectKey,
-            type: typeof v === 'undefined' ? 'undefined' : _typeof(v),
-            formatted: _this._replaceDot(objectKey)
-          });
           _this._sortBodyValue.bind(_this)(v, objectKey, sortData);
-        } else {
-          var _objectKey = "";
-          if (!_lodash2.default.isNull(key)) {
-            _objectKey += key + '.' + k;
-          } else {
-            _objectKey = k;
-          } //end if
-          sortData.push({
-            name: _objectKey,
-            type: typeof v === 'undefined' ? 'undefined' : _typeof(v),
-            formatted: _this._replaceDot(_objectKey)
-          });
-        } //end if
+        });
+        return;
+      }
+
+      sortData.push({
+        name: key,
+        type: this._typeOf(body),
+        formatted: this._replaceDot(key)
       });
+    }
+  }, {
+    key: '_typeOf',
+    value: function _typeOf(v) {
+      if (_lodash2.default.isArray(v)) {
+        return "array";
+      } else {
+        return typeof v === 'undefined' ? 'undefined' : _typeof(v);
+      }
     }
   }, {
     key: '_parseAPI',
@@ -169,13 +198,7 @@ var Jsoner = function () {
       //處理response body
       if (_lodash2.default.isObject(api.res.body)) {
         var res_body = [];
-        if (_lodash2.default.isUndefined(api.res.body.data)) {
-          this._sortBodyValue(api.res.body, null, res_body);
-        } else if (_lodash2.default.isArray(api.res.body.data)) {
-          //如果有data代表他可能是array
-          var _reqbody = _lodash2.default.head(api.res.body.data);
-          this._sortBodyValue(_reqbody, null, res_body);
-        } //end if
+        this._sortBodyValue(api.res.body, null, res_body);
         exportAPI.res.raw_body = JSON.stringify(api.res.body, null, 2);
         exportAPI.res.body = this._syntaxHighlight(exportAPI.res.raw_body);
         exportAPI.res.bodyParams = res_body;
@@ -275,8 +298,8 @@ var Jsoner = function () {
           this._sortBodyValue(body, null, res_body);
         } else if (_lodash2.default.isArray(body.data)) {
           //如果有data代表他是array
-          var _reqbody2 = _lodash2.default.head(body.data);
-          this._sortBodyValue(_reqbody2, null, res_body);
+          var _reqbody = _lodash2.default.head(body.data);
+          this._sortBodyValue(_reqbody, null, res_body);
         } //end if
         api.res.raw_body = JSON.stringify(body, null, 2);
         api.res.body = this._syntaxHighlight(api.res.raw_body);
