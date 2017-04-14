@@ -120,6 +120,16 @@ class Jsoner {
 
   }
 
+  _parseBody(body) {
+    let temp;
+    try {
+      temp = JSON.parse(body)
+    } catch (e) {
+      temp = body;
+    }
+    return temp;
+  }
+
   _typeOf(v, key) {
     let typeStr = "";
     if (_.isString(key)) {
@@ -140,7 +150,7 @@ class Jsoner {
     let exportAPI = _.merge({}, api);
 
     //處理request body
-    if (_.isObject(api.req.body)) {
+    if (_.isObject(this._parseBody(api.req.body))) {
       let req_body = [];
       let reqbody = api.req.body;
       this._sortBodyValue(reqbody, null, req_body);
@@ -161,7 +171,7 @@ class Jsoner {
     }
 
     //處理response body
-    if (_.isObject(api.res.body)) {
+    if (_.isObject(this._parseBody(api.res.body))) {
       let res_body = [];
       this._sortBodyValue(api.res.body, null, res_body);
       exportAPI.res.raw_body = JSON.stringify(api.res.body, null, 2);

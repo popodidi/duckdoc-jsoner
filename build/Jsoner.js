@@ -162,6 +162,17 @@ var Jsoner = function () {
       });
     }
   }, {
+    key: '_parseBody',
+    value: function _parseBody(body) {
+      var temp = void 0;
+      try {
+        temp = JSON.parse(body);
+      } catch (e) {
+        temp = body;
+      }
+      return temp;
+    }
+  }, {
     key: '_typeOf',
     value: function _typeOf(v, key) {
       var typeStr = "";
@@ -184,7 +195,7 @@ var Jsoner = function () {
       var exportAPI = _lodash2.default.merge({}, api);
 
       //處理request body
-      if (_lodash2.default.isObject(api.req.body)) {
+      if (_lodash2.default.isObject(this._parseBody(api.req.body))) {
         var req_body = [];
         var reqbody = api.req.body;
         this._sortBodyValue(reqbody, null, req_body);
@@ -204,7 +215,7 @@ var Jsoner = function () {
       }
 
       //處理response body
-      if (_lodash2.default.isObject(api.res.body)) {
+      if (_lodash2.default.isObject(this._parseBody(api.res.body))) {
         var res_body = [];
         this._sortBodyValue(api.res.body, null, res_body);
         exportAPI.res.raw_body = JSON.stringify(api.res.body, null, 2);
