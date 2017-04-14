@@ -84,7 +84,7 @@ class Jsoner {
     if (_.isArray(body)) {
       sortData.push({
         name     : key,
-        type     : this._typeOf(body),
+        type     : this._typeOf(body, key),
         formatted: this._replaceDot(key)
       });
 
@@ -114,17 +114,25 @@ class Jsoner {
 
     sortData.push({
       name     : key,
-      type     : this._typeOf(body),
+      type     : this._typeOf(body, key),
       formatted: this._replaceDot(key)
     });
 
   }
 
-  _typeOf(v) {
+  _typeOf(v, key) {
+    let typeStr = "";
+    if (_.isString(key)) {
+      _.forEach(key, (c) => {
+        if (c == ".") {
+          typeStr += `<br/>`;
+        }
+      })
+    }
     if (_.isArray(v)) {
-      return "array"
+      return typeStr + "array"
     } else {
-      return typeof v
+      return typeStr + typeof v
     }
   }
 

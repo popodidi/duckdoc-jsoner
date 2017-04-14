@@ -127,7 +127,7 @@ var Jsoner = function () {
       if (_lodash2.default.isArray(body)) {
         sortData.push({
           name: key,
-          type: this._typeOf(body),
+          type: this._typeOf(body, key),
           formatted: this._replaceDot(key)
         });
 
@@ -157,17 +157,25 @@ var Jsoner = function () {
 
       sortData.push({
         name: key,
-        type: this._typeOf(body),
+        type: this._typeOf(body, key),
         formatted: this._replaceDot(key)
       });
     }
   }, {
     key: '_typeOf',
-    value: function _typeOf(v) {
+    value: function _typeOf(v, key) {
+      var typeStr = "";
+      if (_lodash2.default.isString(key)) {
+        _lodash2.default.forEach(key, function (c) {
+          if (c == ".") {
+            typeStr += '<br/>';
+          }
+        });
+      }
       if (_lodash2.default.isArray(v)) {
-        return "array";
+        return typeStr + "array";
       } else {
-        return typeof v === 'undefined' ? 'undefined' : _typeof(v);
+        return typeStr + (typeof v === 'undefined' ? 'undefined' : _typeof(v));
       }
     }
   }, {
