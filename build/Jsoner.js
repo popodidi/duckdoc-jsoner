@@ -294,13 +294,7 @@ var Jsoner = function () {
       //處理response body
       if (_lodash2.default.isObject(body)) {
         var res_body = [];
-        if (_lodash2.default.isUndefined(body.data)) {
-          this._sortBodyValue(body, null, res_body);
-        } else if (_lodash2.default.isArray(body.data)) {
-          //如果有data代表他是array
-          var _reqbody = _lodash2.default.head(body.data);
-          this._sortBodyValue(_reqbody, null, res_body);
-        } //end if
+        this._sortBodyValue(body, null, res_body);
         api.res.raw_body = JSON.stringify(body, null, 2);
         api.res.body = this._syntaxHighlight(api.res.raw_body);
         api.res.bodyParams = res_body;

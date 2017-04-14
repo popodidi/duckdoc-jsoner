@@ -247,13 +247,7 @@ class Jsoner {
     //處理response body
     if (_.isObject(body)) {
       let res_body = [];
-      if (_.isUndefined(body.data)) {
-        this._sortBodyValue(body, null, res_body);
-      } else if (_.isArray(body.data)) {
-        //如果有data代表他是array
-        let reqbody = _.head(body.data);
-        this._sortBodyValue(reqbody, null, res_body);
-      }//end if
+      this._sortBodyValue(body, null, res_body);
       api.res.raw_body = JSON.stringify(body, null, 2);
       api.res.body = this._syntaxHighlight(api.res.raw_body);
       api.res.bodyParams = res_body;
