@@ -173,7 +173,13 @@ var Jsoner = function () {
       } catch (e) {
         temp = body;
       }
-      console.log(temp);
+      if (_lodash2.default.isObject(temp)) {
+        console.log("y");
+        console.log(temp);
+      } else {
+        console.log("n");
+        console.log(temp);
+      }
       return temp;
     }
   }, {

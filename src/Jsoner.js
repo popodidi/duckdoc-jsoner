@@ -130,7 +130,13 @@ class Jsoner {
     } catch (e) {
       temp = body;
     }
-    console.log(temp);
+    if (_.isObject(temp)) {
+      console.log("y");
+      console.log(temp);
+    } else {
+      console.log("n");
+      console.log(temp);
+    }
     return temp;
   }
 
