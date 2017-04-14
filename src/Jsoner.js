@@ -83,8 +83,8 @@ class Jsoner {
 
     if (_.isArray(body)) {
       sortData.push({
-        name     : key,
-        type     : this._typeOf(body, key),
+        name: key,
+        type: this._typeOf(body, key),
         formatted: this._replaceDot(key)
       });
 
@@ -113,8 +113,8 @@ class Jsoner {
     }
 
     sortData.push({
-      name     : key,
-      type     : this._typeOf(body, key),
+      name: key,
+      type: this._typeOf(body, key),
       formatted: this._replaceDot(key)
     });
 
@@ -184,7 +184,7 @@ class Jsoner {
       let omit = ['accept', 'content-length'];
       _.forEach(_.omit(api.req.headers, omit), (v, k) => {
         headers.push({
-          key  : k,
+          key: k,
           value: v
         });
       });
@@ -246,14 +246,14 @@ class Jsoner {
   createFromResponse(endpointName, pathParams, res, body) {
     let api = {
       endpointName: endpointName,
-      pathParams  : pathParams,
-      method      : res.request.method,
-      url         : res.request.uri.href,
+      pathParams: pathParams,
+      method: res.request.method,
+      url: res.request.uri.href,
       // example_url: res.request.uri.href,
-      req         : {},
-      res         : {
+      req: {},
+      res: {
         status: {
-          code   : res.statusCode,
+          code: res.statusCode,
           message: res.statusMessage
         }
       }
@@ -262,14 +262,12 @@ class Jsoner {
     //處理request body
     try {
       let req_body = [];
-      console.log("132132");
       let reqbody = JSON.parse(res.request.body);
       this._sortBodyValue(reqbody, null, req_body);
       api.req.raw_body = JSON.stringify(JSON.parse(res.request.body), null, 2);
       api.req.body = this._syntaxHighlight(api.req.raw_body);
       api.req.bodyParams = req_body;
     } catch (e) {
-      console.log("dsa2j012902");
       api.req.raw_body = res.request.body;
       api.req.body = res.request.body;
       api.req.bodyParams = null;
@@ -277,27 +275,39 @@ class Jsoner {
 
     //處理response body
 
-    if (_.isObject(body)) {
-      console.log("ajdioasjdoisajdos");
+    try {
       body = JSON.parse(body);
+      api.res.raw_body = body;
+      api.res.body = body;
+      api.res.bodyParams = null;
+    } catch (e) {
       let res_body = [];
       this._sortBodyValue(body, null, res_body);
       api.res.raw_body = JSON.stringify(body, null, 2);
       api.res.body = this._syntaxHighlight(api.res.raw_body);
       api.res.bodyParams = res_body;
-    } else {
-      console.log("asdjioqwjiodwq");
-      api.res.raw_body = body;
-      api.res.body = body;
-      api.res.bodyParams = null;
-    }//end if
+    }
+
+    //
+    // if (_.isObject(body)) {
+    //   console.log(body);
+    //   // let res_body = [];
+    //   // this._sortBodyValue(body, null, res_body);
+    //   // api.res.raw_body = JSON.stringify(body, null, 2);
+    //   // api.res.body = this._syntaxHighlight(api.res.raw_body);
+    //   // api.res.bodyParams = res_body;
+    // } else {
+    //   api.res.raw_body = body;
+    //   api.res.body = body;
+    //   api.res.bodyParams = null;
+    // }//end if
 
     if (_.isObject(res.request.headers)) {
       let headers = [];
       let omit = ['accept', 'content-length'];
       _.forEach(_.omit(res.request.headers, omit), (v, k) => {
         headers.push({
-          key  : k,
+          key: k,
           value: v
         });
       });
