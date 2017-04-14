@@ -80,7 +80,7 @@ class Jsoner {
           type: typeof v,
           formatted: this._replaceDot(objectKey)
         });
-        sortBodyValue(v, objectKey, sortData);
+        this._sortBodyValue.bind(this)(v, objectKey, sortData);
       } else {
         let objectKey = "";
         if (!_.isNull(key)) {

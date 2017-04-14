@@ -125,7 +125,7 @@ var Jsoner = function () {
             type: typeof v === 'undefined' ? 'undefined' : _typeof(v),
             formatted: _this._replaceDot(objectKey)
           });
-          sortBodyValue(v, objectKey, sortData);
+          _this._sortBodyValue.bind(_this)(v, objectKey, sortData);
         } else {
           var _objectKey = "";
           if (!_lodash2.default.isNull(key)) {
