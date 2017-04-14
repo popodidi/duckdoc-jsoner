@@ -292,6 +292,7 @@ var Jsoner = function () {
       }
 
       //處理response body
+      body = JSON.parse(body);
       if (_lodash2.default.isObject(body)) {
         var res_body = [];
         this._sortBodyValue(body, null, res_body);

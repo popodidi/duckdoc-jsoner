@@ -245,6 +245,7 @@ class Jsoner {
     }
 
     //處理response body
+    body = JSON.parse(body);
     if (_.isObject(body)) {
       let res_body = [];
       this._sortBodyValue(body, null, res_body);
