@@ -28,7 +28,7 @@ let api = {
       "deviceUUID": "xxxx-xxx-xxx",
       "isAnArray": [
         {
-          "name": "user name" 
+          "name": "user name"
         }//, {...}, {...}
       ]
     }
@@ -56,22 +56,22 @@ let options = {
   endpointName: "User register",
   pathParams: "/user/:id",
   req: {
-      body: {
-        description: {
-          email: "user email",
-          "isAnArray.__first_item.name": "name description"
-        },
-        optionalParams: [
-          "deviceUUID",  // optional parameter
-          "isAnArray.__first_item.name"
-        ]
-      }
-    },
-    res: {
-      body: {
-        // same as req.body
-      }
+    body: {
+      description: {
+        email: "user email",
+        "isAnArray.__first_item.name": "name description"
+      },
+      optionalParams: [
+        "deviceUUID",  // optional parameter
+        "isAnArray.__first_item.name"
+      ]
     }
+  },
+  res: {
+    body: {
+      // same as req.body
+    }
+  }
 };
 
 jsoner.createFromAPI(api, options);
