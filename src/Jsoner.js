@@ -276,12 +276,12 @@ class Jsoner {
       }
     };
 
-    let options = _.merge({
+    let optional = Object.assign({
       endpointName: endpointName,
       pathParams: pathParams,
     }, options);
 
-    this.createFromAPI(api, options);
+    this.createFromAPI(api, optional);
   }
 }
 
