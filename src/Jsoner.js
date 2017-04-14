@@ -262,12 +262,14 @@ class Jsoner {
     //處理request body
     try {
       let req_body = [];
+      console.log("132132");
       let reqbody = JSON.parse(res.request.body);
       this._sortBodyValue(reqbody, null, req_body);
       api.req.raw_body = JSON.stringify(JSON.parse(res.request.body), null, 2);
       api.req.body = this._syntaxHighlight(api.req.raw_body);
       api.req.bodyParams = req_body;
     } catch (e) {
+      console.log("dsa2j012902");
       api.req.raw_body = res.request.body;
       api.req.body = res.request.body;
       api.req.bodyParams = null;
@@ -284,6 +286,7 @@ class Jsoner {
       api.res.body = this._syntaxHighlight(api.res.raw_body);
       api.res.bodyParams = res_body;
     } else {
+      console.log("asdjioqwjiodwq");
       api.res.raw_body = body;
       api.res.body = body;
       api.res.bodyParams = null;
