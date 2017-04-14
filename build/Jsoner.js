@@ -155,6 +155,9 @@ var Jsoner = function () {
         return;
       }
 
+      if (_lodash2.default.isUndefined(key) || _lodash2.default.isNull(key)) {
+        key = "";
+      }
       sortData.push({
         name: key,
         type: this._typeOf(body, key),

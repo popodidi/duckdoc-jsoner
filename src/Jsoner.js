@@ -112,6 +112,9 @@ class Jsoner {
       return
     }
 
+    if (_.isUndefined(key) || _.isNull(key)) {
+      key = "";
+    }
     sortData.push({
       name: key,
       type: this._typeOf(body, key),
