@@ -321,8 +321,10 @@ var Jsoner = function () {
       }
 
       //處理response body
-      body = JSON.parse(body);
+
       if (_lodash2.default.isObject(body)) {
+        console.log("ajdioasjdoisajdos");
+        body = JSON.parse(body);
         var res_body = [];
         this._sortBodyValue(body, null, res_body);
         api.res.raw_body = JSON.stringify(body, null, 2);

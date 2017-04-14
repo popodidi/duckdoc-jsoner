@@ -274,8 +274,10 @@ class Jsoner {
     }
 
     //處理response body
-    body = JSON.parse(body);
+
     if (_.isObject(body)) {
+      console.log("ajdioasjdoisajdos");
+      body = JSON.parse(body);
       let res_body = [];
       this._sortBodyValue(body, null, res_body);
       api.res.raw_body = JSON.stringify(body, null, 2);
