@@ -25,7 +25,12 @@ let api = {
     "body": {
       "email": "xxx@xxx.xxx",
       "tel": "xxxxxxx",
-      "deviceUUID": "xxxx-xxx-xxx"
+      "deviceUUID": "xxxx-xxx-xxx",
+      "isAnArray": [
+        {
+          "name": "user name" 
+        }//, {...}, {...}
+      ]
     }
   },
   "res": {
@@ -53,10 +58,12 @@ let options = {
   req: {
       body: {
         description: {
-          email: "user email"
+          email: "user email",
+          "isAnArray.__first_item.name": "name description"
         },
         optionalParams: [
-          "deviceUUID" // optional parameter
+          "deviceUUID",  // optional parameter
+          "isAnArray.__first_item.name"
         ]
       }
     },
@@ -66,8 +73,11 @@ let options = {
       }
     }
 };
+
 jsoner.createFromAPI(api, options);
 ```
+
+> use `__first.item` to indicate the items of array.
 
 As the jsoner is designed to be integrated within the testing process, the concept is to load `api` from realistic http request. The manually added informations are specified in `options`.
 
