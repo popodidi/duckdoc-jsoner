@@ -170,6 +170,7 @@ var Jsoner = function () {
       } catch (e) {
         temp = body;
       }
+      console.log(temp);
       return temp;
     }
   }, {

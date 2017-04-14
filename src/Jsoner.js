@@ -127,6 +127,7 @@ class Jsoner {
     } catch (e) {
       temp = body;
     }
+    console.log(temp);
     return temp;
   }
 
