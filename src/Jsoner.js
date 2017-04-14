@@ -250,72 +250,67 @@ class Jsoner {
       method: res.request.method,
       url: res.request.uri.href,
       // example_url: res.request.uri.href,
-      req: {},
+      req: {
+        headers: res.request.headers,
+        body: res.request.body
+      },
       res: {
         status: {
           code: res.statusCode,
           message: res.statusMessage
-        }
+        },
+        body: body
       }
     };
 
-    //處理request body
-    try {
-      let req_body = [];
-      let reqbody = JSON.parse(res.request.body);
-      this._sortBodyValue(reqbody, null, req_body);
-      api.req.raw_body = JSON.stringify(JSON.parse(res.request.body), null, 2);
-      api.req.body = this._syntaxHighlight(api.req.raw_body);
-      api.req.bodyParams = req_body;
-    } catch (e) {
-      api.req.raw_body = res.request.body;
-      api.req.body = res.request.body;
-      api.req.bodyParams = null;
-    }
+    /*
 
-    //處理response body
+     //處理request body
+     try {
+     let req_body = [];
+     let reqbody = JSON.parse(res.request.body);
+     this._sortBodyValue(reqbody, null, req_body);
+     api.req.raw_body = JSON.stringify(JSON.parse(res.request.body), null, 2);
+     api.req.body = this._syntaxHighlight(api.req.raw_body);
+     api.req.bodyParams = req_body;
+     } catch (e) {
+     api.req.raw_body = res.request.body;
+     api.req.body = res.request.body;
+     api.req.bodyParams = null;
+     }
 
-    try {
-      body = JSON.parse(body);
-      api.res.raw_body = body;
-      api.res.body = body;
-      api.res.bodyParams = null;
-    } catch (e) {
-      let res_body = [];
-      this._sortBodyValue(body, null, res_body);
-      api.res.raw_body = JSON.stringify(body, null, 2);
-      api.res.body = this._syntaxHighlight(api.res.raw_body);
-      api.res.bodyParams = res_body;
-    }
+     //處理response body
+     body = JSON.parse(body);
+     if (_.isObject(body)) {
+     let res_body = [];
+     this._sortBodyValue(body, null, res_body);
+     api.res.raw_body = JSON.stringify(body, null, 2);
+     api.res.body = this._syntaxHighlight(api.res.raw_body);
+     api.res.bodyParams = res_body;
+     } else {
 
-    //
-    // if (_.isObject(body)) {
-    //   console.log(body);
-    //   // let res_body = [];
-    //   // this._sortBodyValue(body, null, res_body);
-    //   // api.res.raw_body = JSON.stringify(body, null, 2);
-    //   // api.res.body = this._syntaxHighlight(api.res.raw_body);
-    //   // api.res.bodyParams = res_body;
-    // } else {
-    //   api.res.raw_body = body;
-    //   api.res.body = body;
-    //   api.res.bodyParams = null;
-    // }//end if
+     api.res.raw_body = body;
+     api.res.body = body;
+     api.res.bodyParams = null;
+     }//end if
 
-    if (_.isObject(res.request.headers)) {
-      let headers = [];
-      let omit = ['accept', 'content-length'];
-      _.forEach(_.omit(res.request.headers, omit), (v, k) => {
-        headers.push({
-          key: k,
-          value: v
-        });
-      });
-      api.req.headers = headers;
-    } else {
-      api.req.headers = null;
-    }//end if
-    this._createApiJson(api);
+     if (_.isObject(res.request.headers)) {
+     let headers = [];
+     let omit = ['accept', 'content-length'];
+     _.forEach(_.omit(res.request.headers, omit), (v, k) => {
+     headers.push({
+     key: k,
+     value: v
+     });
+     });
+     api.req.headers = headers;
+     } else {
+     api.req.headers = null;
+     }//end if
+     */
+
+    this.createFromAPI(api);
+    // this._createApiJson(api);
   }
 }
 
