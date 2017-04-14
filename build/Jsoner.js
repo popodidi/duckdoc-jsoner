@@ -156,7 +156,7 @@ var Jsoner = function () {
       }
 
       if (_lodash2.default.isUndefined(key) || _lodash2.default.isNull(key)) {
-        key = "";
+        throw new Error("unexpected body format.");
       }
       sortData.push({
         name: key,
@@ -172,13 +172,6 @@ var Jsoner = function () {
         temp = JSON.parse(body);
       } catch (e) {
         temp = body;
-      }
-      if (_lodash2.default.isObject(temp)) {
-        console.log("y");
-        console.log(temp);
-      } else {
-        console.log("n");
-        console.log(temp);
       }
       return temp;
     }
@@ -205,7 +198,8 @@ var Jsoner = function () {
       var exportAPI = _lodash2.default.merge({}, api);
 
       //處理request body
-      if (_lodash2.default.isObject(this._parseBody(api.req.body))) {
+      api.req.body = this._parseBody(api.req.body);
+      if (_lodash2.default.isObject(api.req.body)) {
         var req_body = [];
         var reqbody = api.req.body;
         this._sortBodyValue(reqbody, null, req_body);
@@ -225,7 +219,8 @@ var Jsoner = function () {
       }
 
       //處理response body
-      if (_lodash2.default.isObject(this._parseBody(api.res.body))) {
+      api.res.body = this._parseBody(api.res.body);
+      if (_lodash2.default.isObject(api.res.body)) {
         var res_body = [];
         this._sortBodyValue(api.res.body, null, res_body);
         exportAPI.res.raw_body = JSON.stringify(api.res.body, null, 2);

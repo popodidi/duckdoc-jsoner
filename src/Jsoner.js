@@ -113,7 +113,7 @@ class Jsoner {
     }
 
     if (_.isUndefined(key) || _.isNull(key)) {
-      key = "";
+      throw new Error("unexpected body format.");
     }
     sortData.push({
       name: key,
@@ -129,13 +129,6 @@ class Jsoner {
       temp = JSON.parse(body)
     } catch (e) {
       temp = body;
-    }
-    if (_.isObject(temp)) {
-      console.log("y");
-      console.log(temp);
-    } else {
-      console.log("n");
-      console.log(temp);
     }
     return temp;
   }
@@ -160,7 +153,8 @@ class Jsoner {
     let exportAPI = _.merge({}, api);
 
     //處理request body
-    if (_.isObject(this._parseBody(api.req.body))) {
+    api.req.body = this._parseBody(api.req.body);
+    if (_.isObject(api.req.body)) {
       let req_body = [];
       let reqbody = api.req.body;
       this._sortBodyValue(reqbody, null, req_body);
@@ -181,7 +175,8 @@ class Jsoner {
     }
 
     //處理response body
-    if (_.isObject(this._parseBody(api.res.body))) {
+    api.res.body = this._parseBody(api.res.body)
+    if (_.isObject(api.res.body)) {
       let res_body = [];
       this._sortBodyValue(api.res.body, null, res_body);
       exportAPI.res.raw_body = JSON.stringify(api.res.body, null, 2);
