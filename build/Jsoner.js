@@ -292,8 +292,6 @@ var Jsoner = function () {
     key: 'createFromResponse',
     value: function createFromResponse(endpointName, pathParams, res, body) {
       var api = {
-        // endpointName: endpointName,
-        // pathParams: pathParams,
         method: res.request.method,
         url: res.request.uri.href,
         // example_url: res.request.uri.href,
@@ -308,6 +306,11 @@ var Jsoner = function () {
           },
           body: body
         }
+      };
+
+      var options = {
+        endpointName: endpointName,
+        pathParams: pathParams
       };
 
       /*
@@ -352,7 +355,7 @@ var Jsoner = function () {
        }//end if
        */
 
-      this.createFromAPI(api);
+      this.createFromAPI(api, options);
       // this._createApiJson(api);
     }
   }]);
