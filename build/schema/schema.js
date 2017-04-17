@@ -16,10 +16,10 @@ var apiSchema = {
       "type": "object",
       "properties": {
         "headers": {
-          "type": "object"
+          "type": ["object", "null"]
         },
         "body": {
-          "type": ["object", "string"]
+          "type": ["object", "string", "null"]
         }
       },
       "additionalProperties": false
@@ -40,7 +40,7 @@ var apiSchema = {
           "additionalProperties": false
         },
         "body": {
-          "type": ["object", "string"]
+          "type": ["object", "string", "null"]
         }
       },
       "additionalProperties": false
