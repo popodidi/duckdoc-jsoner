@@ -89,7 +89,11 @@ var jsoner = require('duckdoc-jsoner');
 jsoner.ouputPath = "path/to/output/folder";
 
 request(options, function (error, response, body) {
-  jsoner.createFromResponse('GET Test', '/test', response, body);
+  let opt = {
+    endpointName :'GET Test', 
+    pathParams: '/test'
+  };
+  jsoner.createFromResponse(response, body, opt);
 });
 
 // options: resolveWithFullResponse: true
