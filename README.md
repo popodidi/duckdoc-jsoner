@@ -82,7 +82,7 @@ jsoner.createFromAPI(api, options);
 As the jsoner is designed to be integrated within the testing process, the concept is to load `api` from realistic http request. The manually added informations are specified in `options`.
 
 
-## Using with [request](https://www.npmjs.com/package/request)
+## Using with [request](https://www.npmjs.com/package/request) or [request-promise](https://www.npmjs.com/package/request-promise)
 
 ```javascript
 var jsoner = require('duckdoc-jsoner');
@@ -91,9 +91,15 @@ jsoner.ouputPath = "path/to/output/folder";
 request(options, function (error, response, body) {
   jsoner.createFromResponse('GET Test', '/test', response, body);
 });
+
+// options: resolveWithFullResponse: true
+rq(options).then(function (response) {
+  jsoner.createFromResponse(response, response.body);
+});
+
 ```
 
 ### properties
 - `jsoner.outputPath`: `.json` file output path
 - `jsoner.createFromAPI(api, options)`
-- `jsoner.createFromResponse(endpointName, endpointPathParam, response, body)`
+- `jsoner.createFromResponse(response, body, options)`
