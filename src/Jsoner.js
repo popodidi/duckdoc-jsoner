@@ -258,7 +258,7 @@ class Jsoner {
   }
 
 
-  createFromResponse(endpointName, pathParams, res, body, options) {
+  createFromResponse(res, body, options) {
     let api = {
       method: res.request.method,
       url: res.request.uri.href,
@@ -276,12 +276,12 @@ class Jsoner {
       }
     };
 
-    let optional = Object.assign({
-      endpointName: endpointName,
-      pathParams: pathParams,
-    }, options);
+    // let optional = Object.assign({
+    //   endpointName: endpointName,
+    //   pathParams: pathParams,
+    // }, options);
 
-    this.createFromAPI(api, optional);
+    this.createFromAPI(api, options);
   }
 }
 
