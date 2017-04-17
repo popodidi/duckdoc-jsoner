@@ -220,10 +220,10 @@ class Jsoner {
   }
 
   _parseOptions(api, options) {
-    let API = Object.assign(api, {
+    let API = Object.assign({}, api, {
       endpointName: options.endpointName,
       pathParams: options.pathParams,
-      req: Object.assign(api.req, {
+      req: Object.assign({}, api.req, {
         bodyParams: _.map(api.req.bodyParams, (o) => {
           o["description"] = _.get(_.get(options, 'req.body.description'), o.name)
           var optionalParams = _.get(options, 'req.body.optionalParams');
@@ -233,7 +233,7 @@ class Jsoner {
           return o
         })
       }),
-      res: Object.assign(api.res, {
+      res: Object.assign({}, api.res, {
         bodyParams: _.map(api.res.bodyParams, (o) => {
           o["description"] = _.get(_.get(options, 'res.body.description'), o.name)
           var optionalParams = _.get(options, 'res.body.optionalParams');

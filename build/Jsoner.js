@@ -265,10 +265,10 @@ var Jsoner = function () {
   }, {
     key: '_parseOptions',
     value: function _parseOptions(api, options) {
-      var API = Object.assign(api, {
+      var API = Object.assign({}, api, {
         endpointName: options.endpointName,
         pathParams: options.pathParams,
-        req: Object.assign(api.req, {
+        req: Object.assign({}, api.req, {
           bodyParams: _lodash2.default.map(api.req.bodyParams, function (o) {
             o["description"] = _lodash2.default.get(_lodash2.default.get(options, 'req.body.description'), o.name);
             var optionalParams = _lodash2.default.get(options, 'req.body.optionalParams');
@@ -278,7 +278,7 @@ var Jsoner = function () {
             return o;
           })
         }),
-        res: Object.assign(api.res, {
+        res: Object.assign({}, api.res, {
           bodyParams: _lodash2.default.map(api.res.bodyParams, function (o) {
             o["description"] = _lodash2.default.get(_lodash2.default.get(options, 'res.body.description'), o.name);
             var optionalParams = _lodash2.default.get(options, 'res.body.optionalParams');
