@@ -306,7 +306,7 @@ var Jsoner = function () {
     }
   }, {
     key: 'createFromResponse',
-    value: function createFromResponse(endpointName, pathParams, res, body, options) {
+    value: function createFromResponse(res, body, options) {
       var api = {
         method: res.request.method,
         url: res.request.uri.href,
@@ -324,12 +324,12 @@ var Jsoner = function () {
         }
       };
 
-      var optional = Object.assign({
-        endpointName: endpointName,
-        pathParams: pathParams
-      }, options);
+      // let optional = Object.assign({
+      //   endpointName: endpointName,
+      //   pathParams: pathParams,
+      // }, options);
 
-      this.createFromAPI(api, optional);
+      this.createFromAPI(api, options);
     }
   }]);
 
