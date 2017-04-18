@@ -24,7 +24,7 @@ class Jsoner {
 
   _createApiJson(api) {
     try {
-      let fileName = `${api.method}_${filenamify(api.pathParams, {replacement: '+'})}`;
+      let fileName = `${api.method}_${filenamify(api.pathParams, {replacement: '_'})}`;
       let filePath = path.join(this.outputPath, `${fileName}.json`);
       this._mkdirIfNecessary();
       fs.writeFileSync(filePath, JSON.stringify(api));
