@@ -252,13 +252,17 @@ var Jsoner = function () {
         exportAPI.req.headers = _lodash2.default.isUndefined(api.req.headers) ? null : api.req.headers;
       } //end if
 
+      var urlObject = _url2.default.parse(api.url);
       if (_lodash2.default.isNull(options)) {
         //處理options
-        var urlObject = _url2.default.parse(api.url);
         exportAPI.pathParams = urlObject.pathname;
         exportAPI.endpointName = urlObject.pathname;
         this._createApiJson(exportAPI);
       } else {
+        options = Object.assign({
+          endpointName: urlObject.pathname,
+          pathParams: urlObject.pathname
+        }, options);
         this._parseOptions(exportAPI, options);
       } //end if
     }

@@ -208,13 +208,17 @@ class Jsoner {
       exportAPI.req.headers = (_.isUndefined(api.req.headers)) ? null : api.req.headers;
     }//end if
 
+    let urlObject = url.parse(api.url);
     if (_.isNull(options)) {
       //處理options
-      let urlObject = url.parse(api.url);
       exportAPI.pathParams = urlObject.pathname;
       exportAPI.endpointName = urlObject.pathname;
       this._createApiJson(exportAPI);
     } else {
+      options = Object.assign({
+        endpointName: urlObject.pathname,
+        pathParams: urlObject.pathname
+      }, options);
       this._parseOptions(exportAPI, options);
     }//end if
   }
