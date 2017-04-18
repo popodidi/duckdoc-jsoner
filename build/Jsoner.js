@@ -66,7 +66,7 @@ var Jsoner = function () {
     key: '_createApiJson',
     value: function _createApiJson(api) {
       try {
-        var fileName = api.method + '_' + (0, _filenamify2.default)(api.pathParams, { replacement: '_' });
+        var fileName = '_' + (0, _filenamify2.default)(api.pathParams, { replacement: '_' }) + '_' + api.method;
         var filePath = _path2.default.join(this.outputPath, fileName + '.json');
         this._mkdirIfNecessary();
         _fs2.default.writeFileSync(filePath, JSON.stringify(api));
