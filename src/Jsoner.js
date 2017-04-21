@@ -149,7 +149,7 @@ class Jsoner {
     }
   }
 
-  _parseAPI(api, options) {
+  _parseAPI(api, options, status) {
     let exportAPI = _.merge({}, api);
 
     //處理request body
@@ -175,7 +175,7 @@ class Jsoner {
     }
 
     //處理response body
-    api.res.body = this._parseBody(api.res.body)
+    api.res.body = this._parseBody(api.res.body);
     if (_.isObject(api.res.body)) {
       let res_body = [];
       this._sortBodyValue(api.res.body, null, res_body);
@@ -209,18 +209,26 @@ class Jsoner {
     }//end if
 
     let urlObject = url.parse(api.url);
-    if (_.isNull(options)) {
-      //處理options
-      exportAPI.pathParams = urlObject.pathname;
-      exportAPI.endpointName = urlObject.pathname;
-      this._createApiJson(exportAPI);
+
+    if (status) {
+      if (_.isNull(options)) {
+        //處理options
+        exportAPI.pathParams = urlObject.pathname;
+        exportAPI.endpointName = urlObject.pathname;
+        this._createApiJson(exportAPI);
+      } else {
+        options = Object.assign({
+          endpointName: urlObject.pathname,
+          pathParams: urlObject.pathname
+        }, options);
+        this._parseOptions(exportAPI, options);
+      }//end if
     } else {
-      options = Object.assign({
-        endpointName: urlObject.pathname,
-        pathParams: urlObject.pathname
-      }, options);
-      this._parseOptions(exportAPI, options);
+      // handle task
+      console.log(exportAPI);
+
     }//end if
+
   }
 
   _parseOptions(api, options) {
@@ -251,10 +259,17 @@ class Jsoner {
     this._createApiJson(API);
   }
 
+  _parseTask(api) {
+    _.forEach(api.tasks, (v, k) => {
+      this._parseAPI(v, k.options, false);
+    });
+  }
+
+
   createFromAPI(api, options = null) {
     let result = tv4.validateMultiple(api, schema.apiSchema);
     if (result.valid) {
-      this._parseAPI(api, options);
+      this._parseAPI(api, options, true);
     } else {
       let err = _.first(result.errors);
       throw new Error(chalk.red.bold(`${err.message} : ${err.dataPath}`));
@@ -287,6 +302,14 @@ class Jsoner {
 
     this.createFromAPI(api, options);
   }
+
+  createEndpoint(endpoint) {
+    console.log("jsoner!!!");
+    endpoint._createEndpointJson();
+    // console.log(endpoint.api);
+    this._parseTask(endpoint.api);
+  }
+
 }
 
 

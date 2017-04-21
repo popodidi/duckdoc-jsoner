@@ -107,3 +107,41 @@ rq(options).then(function (response) {
 - `jsoner.outputPath`: `.json` file output path
 - `jsoner.createFromAPI(api, options)`
 - `jsoner.createFromResponse(response, body, options)`
+
+## Task
+```js
+let Task = require('duckdoc-jsoner').Task;
+
+let task = Task.createFromRequest();
+
+
+```
+
+### properties
+- `Task.createFromRequest(response, body)`
+- `Task.createFromAxios(response)`
+- `task.options`
+```js
+let task = Task.createFromRequest(response, response.body);
+task.options = {
+  name: "Success({StatusCode})",
+  description: "success situation",
+  req: {
+    body: {
+      description: {
+        email: "user email",
+        "isAnArray.__first_item.name": "name description"
+      },
+      optionalParams: [
+        "deviceUUID",  // optional parameter
+        "isAnArray.__first_item.name"
+      ],
+    }
+  },
+  res: {
+    body: {
+        // same as req.body
+    }
+  }
+};
+```
