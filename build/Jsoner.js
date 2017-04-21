@@ -194,7 +194,7 @@ var Jsoner = function () {
     }
   }, {
     key: '_parseAPI',
-    value: function _parseAPI(api, options) {
+    value: function _parseAPI(api, options, tasks) {
       var exportAPI = _lodash2.default.merge({}, api);
 
       //處理request body
@@ -252,26 +252,34 @@ var Jsoner = function () {
         exportAPI.req.headers = _lodash2.default.isUndefined(api.req.headers) ? null : api.req.headers;
       } //end if
 
-      var urlObject = _url2.default.parse(api.url);
-      if (_lodash2.default.isNull(options)) {
-        //處理options
-        exportAPI.pathParams = urlObject.pathname;
-        exportAPI.endpointName = urlObject.pathname;
-        this._createApiJson(exportAPI);
-      } else {
-        options = Object.assign({
-          endpointName: urlObject.pathname,
-          pathParams: urlObject.pathname
-        }, options);
-        this._parseOptions(exportAPI, options);
-      } //end if
+      tasks.push(this._parseOptions(exportAPI, options));
+      // tasks.push(exportAPI);
     }
   }, {
     key: '_parseOptions',
     value: function _parseOptions(api, options) {
-      var API = Object.assign({}, api, {
-        endpointName: options.endpointName,
-        pathParams: options.pathParams,
+      var name = void 0,
+          desc = void 0;
+      //handle tasks name
+      if (_lodash2.default.isUndefined(options.name)) {
+        name = _lodash2.default.toString(api.res.status.code);
+      } else {
+        name = options.name.replace("{statusCode}", api.res.status.code);
+      }
+
+      //handle tasks description
+      if (_lodash2.default.isUndefined(options.description)) {
+        desc = "";
+      } else {
+        desc = options.description;
+      }
+
+      return Object.assign({}, api, {
+        // let API = Object.assign({}, api, {
+        // endpointName: options.endpointName,
+        // pathParams: options.pathParams,
+        name: name,
+        description: desc,
         req: Object.assign({}, api.req, {
           bodyParams: _lodash2.default.map(api.req.bodyParams, function (o) {
             o["description"] = _lodash2.default.get(_lodash2.default.get(options, 'req.body.description'), o.name);
@@ -293,7 +301,42 @@ var Jsoner = function () {
           })
         })
       });
-      this._createApiJson(API);
+      // this._createApiJson(API);
+    }
+  }, {
+    key: '_parseTask',
+    value: function _parseTask(api, endpointOptions) {
+      var _this2 = this;
+
+      var jsoner_task = [];
+      _lodash2.default.forEach(api.tasks, function (v, k) {
+        _this2._parseAPI(_lodash2.default.omit(v, 'options'), v.options, jsoner_task);
+      });
+      // console.log("==================");
+      // console.log(jsoner_task);
+      // console.log("==================");
+      this._combineEndpoint(jsoner_task, endpointOptions);
+    }
+  }, {
+    key: '_combineEndpoint',
+    value: function _combineEndpoint(tasks, api_options) {
+      var endpoint = {
+        tasks: tasks
+      };
+      var picks = ['endpointName', 'pathParams'];
+      var api = _lodash2.default.head(tasks);
+
+      if (_lodash2.default.isNull(api_options)) {
+        //處理options
+        var urlObject = _url2.default.parse(api.url);
+        endpoint.pathParams = urlObject.pathname;
+        endpoint.endpointName = urlObject.pathname;
+      } else {
+        endpoint = _lodash2.default.assign(endpoint, _lodash2.default.pick(api_options, picks));
+      } //end if
+
+      endpoint.method = api.method;
+      this._createApiJson(endpoint);
     }
   }, {
     key: 'createFromAPI',
@@ -302,7 +345,13 @@ var Jsoner = function () {
 
       var result = _tv2.default.validateMultiple(api, _schema2.default.apiSchema);
       if (result.valid) {
-        this._parseAPI(api, options);
+        var jsoner_tasks = [];
+        this._parseAPI(api, options, jsoner_tasks);
+        this._combineEndpoint(jsoner_tasks, options);
+
+        // console.log("creatdFromAPI===========");
+        // console.log(jsoner_tasks);
+        // console.log("=============");
       } else {
         var err = _lodash2.default.first(result.errors);
         throw new Error(_chalk2.default.red.bold(err.message + ' : ' + err.dataPath));
@@ -334,6 +383,14 @@ var Jsoner = function () {
       // }, options);
 
       this.createFromAPI(api, options);
+    }
+  }, {
+    key: 'createEndpoint',
+    value: function createEndpoint(endpoint) {
+      console.log("jsoner!!!");
+      endpoint._createEndpointJson();
+      // console.log(endpoint.api);
+      this._parseTask(endpoint.api, endpoint.endpointOption);
     }
   }]);
 

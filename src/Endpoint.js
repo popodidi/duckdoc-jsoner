@@ -20,18 +20,34 @@ class Endpoint {
     this.method = null;
   }
 
-  _createEndpointJson() {
-    let first = _.head(this.tasks);
+  _checkMethod(tasks) {
+    let method = [];
+    _.forEach(tasks, (v, k) => {
+      method.push(v.method);
+    });
+    if (_.uniq(method).length > 1) {
+      console.log(`Task methods: `, method);
+      throw new Error("Tasks method is not same!!");
+    } else {
+      return true
+    }//end if
 
-    this.api = {
-      endpointName: this.endpointName,
-      pathsParams: this.pathParams,
-      method: first.method,
-      url: first.url,
-      tasks: this.tasks
-    };
-    // console.log(api);
-    // return api;
+  }
+
+  _createEndpointJson() {
+    if (this._checkMethod(this.tasks)) {
+      let first = _.head(this.tasks);
+      this.api = {
+        method: first.method,
+        url: first.url,
+        tasks: this.tasks
+      };
+      this.endpointOption = {
+        endpointName: this.endpointName,
+        pathParams: this.pathParams,
+      };
+    }//end if
+
   }
 
 

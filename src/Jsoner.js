@@ -149,7 +149,7 @@ class Jsoner {
     }
   }
 
-  _parseAPI(api, options, status) {
+  _parseAPI(api, options, tasks) {
     let exportAPI = _.merge({}, api);
 
     //處理request body
@@ -208,35 +208,36 @@ class Jsoner {
       exportAPI.req.headers = (_.isUndefined(api.req.headers)) ? null : api.req.headers;
     }//end if
 
-    if (status) {
-      let urlObject = url.parse(api.url);
-      if (_.isNull(options)) {
-        //處理options
-        exportAPI.pathParams = urlObject.pathname;
-        exportAPI.endpointName = urlObject.pathname;
-        this._createApiJson(exportAPI);
-      } else {
-        options = Object.assign({
-          endpointName: urlObject.pathname,
-          pathParams: urlObject.pathname
-        }, options);
-        this._parseOptions(exportAPI, options);
-      }//end if
-    } else {
-      // handle task
-      console.log(exportAPI);
-
-    }//end if
+    tasks.push(this._parseOptions(exportAPI, options));
+    // tasks.push(exportAPI);
 
   }
 
   _parseOptions(api, options) {
-    let API = Object.assign({}, api, {
-      endpointName: options.endpointName,
-      pathParams: options.pathParams,
+    let name, desc;
+    //handle tasks name
+    if (_.isUndefined(options.name)) {
+      name = _.toString(api.res.status.code);
+    } else {
+      name = options.name.replace("{statusCode}", api.res.status.code);
+    }
+
+    //handle tasks description
+    if (_.isUndefined(options.description)) {
+      desc = "";
+    } else {
+      desc = options.description;
+    }
+
+    return Object.assign({}, api, {
+      // let API = Object.assign({}, api, {
+      // endpointName: options.endpointName,
+      // pathParams: options.pathParams,
+      name: name,
+      description: desc,
       req: Object.assign({}, api.req, {
         bodyParams: _.map(api.req.bodyParams, (o) => {
-          o["description"] = _.get(_.get(options, 'req.body.description'), o.name)
+          o["description"] = _.get(_.get(options, 'req.body.description'), o.name);
           var optionalParams = _.get(options, 'req.body.optionalParams');
           if (!_.isUndefined(optionalParams) && _.indexOf(optionalParams, o.name) >= 0) {
             o["optional"] = true;
@@ -255,20 +256,54 @@ class Jsoner {
         })
       })
     });
-    this._createApiJson(API);
+    // this._createApiJson(API);
   }
 
-  _parseTask(api) {
+  _parseTask(api, endpointOptions) {
+    let jsoner_task = [];
     _.forEach(api.tasks, (v, k) => {
-      this._parseAPI(v, k.options, false);
+      this._parseAPI(_.omit(v, 'options'), v.options, jsoner_task);
     });
+    // console.log("==================");
+    // console.log(jsoner_task);
+    // console.log("==================");
+    this._combineEndpoint(jsoner_task, endpointOptions);
+
+  }
+
+  _combineEndpoint(tasks, api_options) {
+    let endpoint = {
+      tasks: tasks
+    };
+    let picks = ['endpointName', 'pathParams'];
+    let api = _.head(tasks);
+
+    if (_.isNull(api_options)) {
+      //處理options
+      let urlObject = url.parse(api.url);
+      endpoint.pathParams = urlObject.pathname;
+      endpoint.endpointName = urlObject.pathname;
+    } else {
+      endpoint = _.assign(endpoint, _.pick(api_options, picks));
+    }//end if
+
+    endpoint.method = api.method;
+    this._createApiJson(endpoint);
+
   }
 
 
   createFromAPI(api, options = null) {
     let result = tv4.validateMultiple(api, schema.apiSchema);
     if (result.valid) {
-      this._parseAPI(api, options, true);
+      let jsoner_tasks = [];
+      this._parseAPI(api, options, jsoner_tasks);
+      this._combineEndpoint(jsoner_tasks, options);
+
+      // console.log("creatdFromAPI===========");
+      // console.log(jsoner_tasks);
+      // console.log("=============");
+
     } else {
       let err = _.first(result.errors);
       throw new Error(chalk.red.bold(`${err.message} : ${err.dataPath}`));
@@ -306,7 +341,7 @@ class Jsoner {
     console.log("jsoner!!!");
     endpoint._createEndpointJson();
     // console.log(endpoint.api);
-    this._parseTask(endpoint.api);
+    this._parseTask(endpoint.api, endpoint.endpointOption);
   }
 
 }
