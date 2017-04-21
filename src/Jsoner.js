@@ -338,7 +338,7 @@ class Jsoner {
   }
 
   createEndpoint(endpoint) {
-    console.log("jsoner!!!");
+    // console.log("jsoner!!!");
     endpoint._createEndpointJson();
     // console.log(endpoint.api);
     this._parseTask(endpoint.api, endpoint.endpointOption);

@@ -108,12 +108,16 @@ rq(options).then(function (response) {
 - `jsoner.createFromAPI(api, options)`
 - `jsoner.createFromResponse(response, body, options)`
 
-## Task
+## Endpoint && Task
 ```js
-let Task = require('duckdoc-jsoner').Task;
+let jsoner,{Task,Endpoint} = require('duckdoc-jsoner');
+// let Endpoint = require('duckdoc-jsoner').Endpoint;
 
+let endpoint = new Endpoint("Get customer info.", "/customer");
 let task = Task.createFromRequest();
+endpoint.tasks.push(task);
 
+jsoner.createEndpoint(endpoint);
 
 ```
 
