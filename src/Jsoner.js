@@ -208,9 +208,8 @@ class Jsoner {
       exportAPI.req.headers = (_.isUndefined(api.req.headers)) ? null : api.req.headers;
     }//end if
 
-    let urlObject = url.parse(api.url);
-
     if (status) {
+      let urlObject = url.parse(api.url);
       if (_.isNull(options)) {
         //處理options
         exportAPI.pathParams = urlObject.pathname;

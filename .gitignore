@@ -2,3 +2,4 @@ node_modules
 duckdoc
 .idea/
 testing/
+npm-debug.log
