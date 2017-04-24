@@ -17,7 +17,6 @@ class Endpoint {
     this.endpointName = endpointName;
     this.pathParams = pathParams;
     this.tasks = [];
-    this.method = null;
   }
 
   _checkMethod(tasks) {
@@ -31,7 +30,6 @@ class Endpoint {
     } else {
       return true
     }//end if
-
   }
 
   _createEndpointJson() {
