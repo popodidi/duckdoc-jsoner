@@ -20,8 +20,8 @@ $ npm install --save-dev duckdoc-jsoner
 
 ### definition
 
-- Endpoint: ONE url with ONE http method, ex. `GET` `http://example.com/api/user`
-- Task: making ONE request to an Endpoint, containing the information of request and response.
+- `Endpoint`: ONE url with ONE http method, ex. `GET` `http://example.com/api/user`
+- `Task`: making ONE request to an Endpoint, containing the information of request and response.
 
 ### example
 ```js
@@ -82,7 +82,7 @@ task.options = {
 - `task.options`
 	- `name`: endpoint name with `{StatusCode}` keyword
 	- `description`: endpoint description
-	- `(req/res).(headers/body)`:
+	- `(req/res).body`:
 		- description: `Object`, external description of each field
 		- optionalParams: `Array`, specification optional fields
 
