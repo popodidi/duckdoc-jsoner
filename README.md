@@ -78,7 +78,7 @@ task.options = {
 
 #### Task
 - `Task.createFromRequest(response, body)`: return `Task` object generated from response of [request][request]
-- `Task.createFromAxios(response)`
+- `Task.createFromAxios(response)`: return `Task` object generated from response of [axios][axios]
 - `task.options`
 	- `name`: endpoint name with `{StatusCode}` keyword
 	- `description`: endpoint description
