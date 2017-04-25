@@ -40,6 +40,8 @@ class Task {
       body: body
     };
 
+    t.options = {};
+
     return t;
   }
 
@@ -61,6 +63,9 @@ class Task {
       },
       body: response.data
     };
+
+    t.options = {};
+
     return t;
 
   }
