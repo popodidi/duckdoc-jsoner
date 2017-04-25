@@ -15,7 +15,7 @@ class Jsoner {
   _mkdirIfNecessary() {
     this.outputPath.split('/').forEach((dir, index, splits) => {
       const parent = splits.slice(0, index).join('/');
-      const dirPath = path.resolve(parent, dir);
+      const dirPath = path.resolve('/', parent, dir);
       if (!fs.existsSync(dirPath)) {
         fs.mkdirSync(dirPath);
       }
