@@ -332,7 +332,7 @@ class Jsoner {
         body: res.request.body
       },
       res: {
-        headers: res.reponse.headers,
+        headers: res.headers,
         status: {
           code: res.statusCode,
           message: res.statusMessage
