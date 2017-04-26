@@ -62,6 +62,8 @@ var Task = function () {
         body: body
       };
 
+      t.options = {};
+
       return t;
     }
   }, {
@@ -85,6 +87,9 @@ var Task = function () {
         },
         body: response.data
       };
+
+      t.options = {};
+
       return t;
     }
   }]);

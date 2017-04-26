@@ -56,7 +56,7 @@ var Jsoner = function () {
     value: function _mkdirIfNecessary() {
       this.outputPath.split('/').forEach(function (dir, index, splits) {
         var parent = splits.slice(0, index).join('/');
-        var dirPath = _path2.default.resolve(parent, dir);
+        var dirPath = _path2.default.resolve('/', parent, dir);
         if (!_fs2.default.existsSync(dirPath)) {
           _fs2.default.mkdirSync(dirPath);
         }
