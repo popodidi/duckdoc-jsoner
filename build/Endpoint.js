@@ -36,7 +36,6 @@ var Endpoint = function () {
     this.endpointName = endpointName;
     this.pathParams = pathParams;
     this.tasks = [];
-    this.method = null;
   }
 
   _createClass(Endpoint, [{
