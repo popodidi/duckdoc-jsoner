@@ -41,6 +41,9 @@ var apiSchema = {
         },
         "body": {
           "type": ["object", "string", "null", "undefined"]
+        },
+        "headers": {
+          "type": "object"
         }
       },
       "additionalProperties": false

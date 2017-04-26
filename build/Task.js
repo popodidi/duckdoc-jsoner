@@ -54,6 +54,7 @@ var Task = function () {
       };
 
       t.res = {
+        headers: response.headers,
         status: {
           code: response.statusCode,
           message: response.statusMessage
@@ -77,6 +78,7 @@ var Task = function () {
       };
 
       t.res = {
+        headers: response.headers,
         status: {
           code: response.status,
           message: response.statusText

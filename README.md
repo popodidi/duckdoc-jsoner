@@ -40,7 +40,10 @@ let api = {
     },
     "body": {
       "message": "Register success."
-    }
+    },
+    "headers": {
+      "content-type": "image/png"
+    },
   }
 };
 

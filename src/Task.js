@@ -33,6 +33,7 @@ class Task {
     };
 
     t.res = {
+      headers: response.headers,
       status: {
         code: response.statusCode,
         message: response.statusMessage
@@ -55,6 +56,7 @@ class Task {
     };
 
     t.res = {
+      headers: response.headers,
       status: {
         code: response.status,
         message: response.statusText

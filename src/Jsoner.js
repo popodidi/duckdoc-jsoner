@@ -175,24 +175,35 @@ class Jsoner {
     }
 
     //處理response body
-    api.res.body = this._parseBody(api.res.body);
-    if (_.isObject(api.res.body)) {
-      let res_body = [];
-      this._sortBodyValue(api.res.body, null, res_body);
-      exportAPI.res.raw_body = JSON.stringify(api.res.body, null, 2);
-      exportAPI.res.body = this._syntaxHighlight(exportAPI.res.raw_body);
-      exportAPI.res.bodyParams = res_body;
-    } else {
-      if (!_.isUndefined(api.res.body)) {
-        exportAPI.res.raw_body = api.res.body;
-        exportAPI.res.body = api.res.body;
-        exportAPI.res.bodyParams = null;
-      } else {
-        exportAPI.res.raw_body = null;
-        exportAPI.res.body = null;
+    let type = _.get(api.res.headers, 'content-type');
+    if (!_.isUndefined(type)) {
+      let reg = /^image/i;
+      if (type.match(reg)) {
+        exportAPI.res.raw_body = type;
+        exportAPI.res.body = "<img src='response_file.jpg'>";
         exportAPI.res.bodyParams = null;
       }//end if
-    }//end if
+    } else {
+      api.res.body = this._parseBody(api.res.body);
+      if (_.isObject(api.res.body)) {
+        let res_body = [];
+        this._sortBodyValue(api.res.body, null, res_body);
+        exportAPI.res.raw_body = JSON.stringify(api.res.body, null, 2);
+        exportAPI.res.body = this._syntaxHighlight(exportAPI.res.raw_body);
+        exportAPI.res.bodyParams = res_body;
+      } else {
+        if (!_.isUndefined(api.res.body)) {
+          exportAPI.res.raw_body = api.res.body;
+          exportAPI.res.body = api.res.body;
+          exportAPI.res.bodyParams = null;
+        } else {
+          exportAPI.res.raw_body = null;
+          exportAPI.res.body = null;
+          exportAPI.res.bodyParams = null;
+        }//end if
+      }//end if
+
+    }//end match
 
     if (_.isObject(api.req.headers)) {
       let headers = [];
@@ -321,6 +332,7 @@ class Jsoner {
         body: res.request.body
       },
       res: {
+        headers: res.reponse.headers,
         status: {
           code: res.statusCode,
           message: res.statusMessage
