@@ -114,17 +114,20 @@ var Jsoner = function () {
 
       var objectKey = "";
 
-      if (!_lodash2.default.isUndefined(_lodash2.default.get(body, 'data'))) {
-        if (!_lodash2.default.isNull(key)) {
-          objectKey += key + '.' + "data";
-        } else {
-          objectKey = "data";
-        }
-        this._sortBodyValue.bind(this)(body.data, objectKey, sortData);
-        return;
-      }
+      // if (!_.isUndefined(_.get(body, 'data'))) {
+      //   console.log("A");
+      //   if (!_.isNull(key)) {
+      //     objectKey += `${key}.` + "data";
+      //   } else {
+      //     objectKey = "data";
+      //   }
+      //   this._sortBodyValue.bind(this)(body.data, objectKey, sortData);
+      //   return
+      // }
+
 
       if (_lodash2.default.isArray(body)) {
+        console.log("b");
         sortData.push({
           name: key,
           type: this._typeOf(body, key),
@@ -143,7 +146,7 @@ var Jsoner = function () {
       }
 
       if (_lodash2.default.isObject(body)) {
-        _lodash2.default.forEach(body, function (v, k) {
+        _lodash2.default.forOwn(body, function (v, k) {
           objectKey = "";
           if (!_lodash2.default.isNull(key)) {
             objectKey += key + '.' + k;
@@ -156,6 +159,7 @@ var Jsoner = function () {
       }
 
       if (_lodash2.default.isUndefined(key) || _lodash2.default.isNull(key)) {
+        console.log("jdsalkjsalkds");
         throw new Error("unexpected body format.");
       }
       sortData.push({
@@ -221,7 +225,6 @@ var Jsoner = function () {
       //處理response body
       var type = _lodash2.default.get(api.res.headers, 'content-type');
       if (!_lodash2.default.isUndefined(type)) {
-
         // content-type is image
         if (type.match(/^image/i)) {
           exportAPI.res.raw_body = type;

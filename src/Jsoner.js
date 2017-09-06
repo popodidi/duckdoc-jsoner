@@ -70,18 +70,20 @@ class Jsoner {
 
     let objectKey = "";
 
-    if (!_.isUndefined(_.get(body, 'data'))) {
-      if (!_.isNull(key)) {
-        objectKey += `${key}.` + "data";
-      } else {
-        objectKey = "data";
-      }
-      this._sortBodyValue.bind(this)(body.data, objectKey, sortData);
-      return
-    }
+    // if (!_.isUndefined(_.get(body, 'data'))) {
+    //   console.log("A");
+    //   if (!_.isNull(key)) {
+    //     objectKey += `${key}.` + "data";
+    //   } else {
+    //     objectKey = "data";
+    //   }
+    //   this._sortBodyValue.bind(this)(body.data, objectKey, sortData);
+    //   return
+    // }
 
 
     if (_.isArray(body)) {
+      console.log("b");
       sortData.push({
         name: key,
         type: this._typeOf(body, key),
@@ -100,7 +102,7 @@ class Jsoner {
     }
 
     if (_.isObject(body)) {
-      _.forEach(body, (v, k) => {
+      _.forOwn(body, (v, k) => {
         objectKey = "";
         if (!_.isNull(key)) {
           objectKey += `${key}.` + k;
@@ -108,11 +110,12 @@ class Jsoner {
           objectKey = k.toString();
         }//end if
         this._sortBodyValue.bind(this)(v, objectKey, sortData);
-      })
+      });
       return
     }
 
     if (_.isUndefined(key) || _.isNull(key)) {
+      console.log("jdsalkjsalkds");
       throw new Error("unexpected body format.");
     }
     sortData.push({
